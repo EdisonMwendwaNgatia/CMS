@@ -4,8 +4,8 @@ export type MemberStatus =
   | "visitor"
   | "new member"
   | "full member"
-  | "inactive";
-  | "suspended"
+  | "inactive"
+  | "suspended";
 
 export interface BaptismInfo {
   date?: string;

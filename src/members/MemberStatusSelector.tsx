@@ -14,7 +14,6 @@ export default function MemberStatusSelector({
         value={value}
         onChange={(e) => onChange(e.target.value as MemberStatus)}
       >
-        <option value="visitor">Visitor</option>
         <option value="new_member">New Member</option>
         <option value="full_member">Full Member</option>
         <option value="inactive">Inactive</option>
