@@ -1,0 +1,26 @@
+.sidebar {
+  width: 240px;
+  background-color: #1f2937;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+}
+
+.sidebar button {
+  padding: 10px;
+  background: #374151;
+  color: white;
+  border: none;
+  text-align: left;
+}
+
+.sidebar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
