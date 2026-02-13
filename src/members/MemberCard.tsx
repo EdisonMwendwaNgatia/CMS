@@ -125,8 +125,8 @@ export default function MemberCard({
         <div style={headerStyle}>
           <h3 style={nameStyle}>{member.fullName}</h3>
           <span style={badgeStyle}>
-            {member.status === "full member" ? "Full" : 
-             member.status === "new member" ? "New" : 
+            {member.status === "full_member" ? "Full" : 
+             member.status === "new_member" ? "New" : 
              member.status === "inactive" ? "Inactive" : "Suspended"}
           </span>
         </div>

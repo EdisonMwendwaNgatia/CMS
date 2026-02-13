@@ -186,13 +186,13 @@ export default function Members() {
         </div>
         <div style={statCardStyle}>
           <div style={statNumberStyle}>
-            {members.filter(m => m.status === "full member").length}
+            {members.filter(m => m.status === "full_member").length}
           </div>
           <div style={statLabelStyle}>Full Members</div>
         </div>
         <div style={statCardStyle}>
           <div style={statNumberStyle}>
-            {members.filter(m => m.status === "new member").length}
+            {members.filter(m => m.status === "new_member").length}
           </div>
           <div style={statLabelStyle}>New Members</div>
         </div>

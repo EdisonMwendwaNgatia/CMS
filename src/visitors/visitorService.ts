@@ -44,7 +44,7 @@ export async function convertVisitorToMember(visitor: Visitor) {
       maritalStatus,
       occupation,
       profilePhotoUrl: profilePhotoUrl.trim() || "N/A",
-      status: "new member",
+      status: "new_member",
       baptism,
       createdAt: serverTimestamp(),
     };
