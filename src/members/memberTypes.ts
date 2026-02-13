@@ -2,8 +2,8 @@ import type { Timestamp, FieldValue } from "firebase/firestore";
 
 export type MemberStatus =
   | "visitor"
-  | "new member"
-  | "full member"
+  | "new_member"
+  | "full_member"
   | "inactive"
   | "suspended";
 

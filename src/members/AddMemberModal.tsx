@@ -38,6 +38,167 @@ export default function AddMemberModal({
     duplicateFields: [] 
   });
 
+  const modalStyle = {
+    background: "white",
+    borderRadius: "15px",
+    width: "90%",
+    maxWidth: "800px",
+    maxHeight: "90vh",
+    overflowY: "auto" as const,
+    padding: "30px",
+    position: "relative" as const,
+    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
+  };
+
+  const headerStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "25px",
+    paddingBottom: "15px",
+    borderBottom: "2px solid #ecf0f1",
+  };
+
+  const titleStyle = {
+    fontSize: "1.8rem",
+    fontWeight: "600",
+    color: "#2c3e50",
+    margin: 0,
+  };
+
+  const closeBtnStyle = {
+    background: "none",
+    border: "none",
+    fontSize: "2rem",
+    cursor: "pointer",
+    color: "#95a5a6",
+    padding: "0 10px",
+    lineHeight: "1",
+  };
+
+  const errorBoxStyle = {
+    background: "#fef2f2",
+    border: "1px solid #fecaca",
+    padding: "15px 20px",
+    marginBottom: "20px",
+    borderRadius: "10px",
+    color: "#991b1b",
+  };
+
+  const errorTitleStyle = {
+    fontWeight: "600",
+    marginBottom: "8px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  };
+
+  const errorListStyle = {
+    margin: "8px 0 0 20px",
+    padding: "0",
+    color: "#b91c1c",
+  };
+
+  const warningBoxStyle = {
+    background: "#fffbeb",
+    border: "1px solid #fef3c7",
+    padding: "20px",
+    marginBottom: "20px",
+    borderRadius: "10px",
+    color: "#92400e",
+  };
+
+  const existingMemberBoxStyle = {
+    background: "#f8f9fa",
+    padding: "15px",
+    borderRadius: "8px",
+    margin: "15px 0",
+    fontSize: "0.95rem",
+    borderLeft: "4px solid #f59e0b",
+  };
+
+  const formGridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
+    marginBottom: "25px",
+  };
+
+  const fieldGroupStyle = {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "6px",
+  };
+
+  const labelStyle = {
+    fontWeight: "600",
+    color: "#4b5563",
+    fontSize: "0.9rem",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.5px",
+  };
+
+  const inputStyle = {
+    padding: "12px",
+    border: "2px solid #e5e7eb",
+    borderRadius: "8px",
+    fontSize: "1rem",
+    transition: "all 0.3s",
+    outline: "none",
+    width: "100%",
+    boxSizing: "border-box" as const,
+  };
+
+  const errorTextStyle = {
+    color: "#dc2626",
+    fontSize: "0.8rem",
+    marginTop: "4px",
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    background: "white",
+    cursor: "pointer",
+  };
+
+  const buttonGroupStyle = {
+    display: "flex",
+    flexWrap: "wrap" as const,
+    gap: "12px",
+    marginTop: "25px",
+    paddingTop: "20px",
+    borderTop: "2px solid #ecf0f1",
+  };
+
+  const baseButtonStyle = {
+    padding: "12px 24px",
+    borderRadius: "8px",
+    fontSize: "1rem",
+    fontWeight: "500",
+    cursor: "pointer",
+    border: "none",
+    transition: "all 0.3s",
+    flex: "1 1 auto",
+  };
+
+  const duplicateButtonStyle = {
+    ...baseButtonStyle,
+    background: "#f59e0b",
+    color: "white",
+  };
+
+  const saveButtonStyle = {
+    ...baseButtonStyle,
+    background: "#10b981",
+    color: "white",
+  };
+
+  const cancelButtonStyle = {
+    ...baseButtonStyle,
+    background: "#6b7280",
+    color: "white",
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -162,7 +323,7 @@ export default function AddMemberModal({
         baptism: {},
       }, { 
         skipDuplicateCheck: true,
-        skipValidation: false // Still validate even when forcing add
+        skipValidation: false
       });
 
       onClose();
@@ -186,290 +347,334 @@ export default function AddMemberModal({
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal" style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
-        <h3>Add New Member</h3>
+    <div style={modalStyle}>
+      <div style={headerStyle}>
+        <h3 style={titleStyle}>Add New Member</h3>
+        <button 
+          style={closeBtnStyle} 
+          onClick={onClose}
+          onMouseEnter={(e) => e.currentTarget.style.color = "#4b5563"}
+          onMouseLeave={(e) => e.currentTarget.style.color = "#95a5a6"}
+        >
+          ×
+        </button>
+      </div>
 
-        {/* Validation Errors */}
-        {validationErrors.length > 0 && (
-          <div className="validation-errors" style={{
-            background: '#f8d7da',
-            border: '1px solid #f5c6cb',
-            padding: '10px 15px',
-            marginBottom: '15px',
-            borderRadius: '4px',
-            color: '#721c24'
-          }}>
-            <strong>⚠️ Please fix the following errors:</strong>
-            <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
-              {validationErrors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
+      {/* Validation Errors */}
+      {validationErrors.length > 0 && (
+        <div style={errorBoxStyle}>
+          <div style={errorTitleStyle}>
+            <span>⚠️</span>
+            <span>Please fix the following errors:</span>
           </div>
-        )}
+          <ul style={errorListStyle}>
+            {validationErrors.map((error, index) => (
+              <li key={index} style={{ marginBottom: "4px" }}>{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-        {/* Duplicate Warning */}
-        {duplicateWarning.show && (
-          <div className="duplicate-warning" style={{
-            background: '#fff3cd',
-            border: '1px solid #ffeaa7',
-            padding: '15px',
-            marginBottom: '15px',
-            borderRadius: '4px',
-            color: '#856404'
-          }}>
-            <strong>⚠️ Potential Duplicate Detected!</strong>
-            <p style={{ margin: '8px 0' }}>{duplicateWarning.message}</p>
-            
-            {duplicateWarning.existingMember && (
-              <div style={{
-                background: '#f8f9fa',
-                padding: '10px',
-                borderRadius: '4px',
-                margin: '10px 0',
-                fontSize: '14px'
-              }}>
-                <p style={{ margin: '4px 0' }}>
-                  <strong>Existing Member:</strong> {duplicateWarning.existingMember.fullName}
-                </p>
-                <p style={{ margin: '4px 0' }}>
-                  <strong>Phone:</strong> {duplicateWarning.existingMember.phone}
-                </p>
-                <p style={{ margin: '4px 0' }}>
-                  <strong>Email:</strong> {duplicateWarning.existingMember.email}
-                </p>
-                <p style={{ margin: '4px 0' }}>
-                  <strong>Membership #:</strong> {duplicateWarning.existingMember.membershipNumber}
-                </p>
-              </div>
-            )}
-            
-            <div style={{ marginTop: '15px' }}>
-              <button 
-                onClick={handleForceAdd}
-                disabled={loading}
-                style={{ 
-                  background: '#dc3545',
-                  color: 'white',
-                  marginRight: '10px',
-                  padding: '8px 16px'
-                }}
-              >
-                {loading ? 'Adding...' : 'Add Anyway (Override)'}
-              </button>
-              <button 
-                onClick={() => setDuplicateWarning({ 
-                  show: false, 
-                  message: "", 
-                  duplicateFields: [] 
-                })}
-                style={{ 
-                  background: '#6c757d',
-                  color: 'white',
-                  padding: '8px 16px'
-                }}
-              >
-                Review Details
-              </button>
+      {/* Duplicate Warning */}
+      {duplicateWarning.show && (
+        <div style={warningBoxStyle}>
+          <div style={{ ...errorTitleStyle, color: "#92400e" }}>
+            <span>⚠️</span>
+            <span style={{ fontWeight: 600 }}>Potential Duplicate Detected!</span>
+          </div>
+          <p style={{ margin: "10px 0" }}>{duplicateWarning.message}</p>
+          
+          {duplicateWarning.existingMember && (
+            <div style={existingMemberBoxStyle}>
+              <p style={{ margin: "4px 0" }}>
+                <strong>Existing Member:</strong> {duplicateWarning.existingMember.fullName}
+              </p>
+              <p style={{ margin: "4px 0" }}>
+                <strong>Phone:</strong> {duplicateWarning.existingMember.phone}
+              </p>
+              <p style={{ margin: "4px 0" }}>
+                <strong>Email:</strong> {duplicateWarning.existingMember.email}
+              </p>
+              <p style={{ margin: "4px 0" }}>
+                <strong>Membership #:</strong> {duplicateWarning.existingMember.membershipNumber}
+              </p>
             </div>
-          </div>
-        )}
-
-        {/* Form Fields */}
-        <div className="form-grid" style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '12px',
-          marginBottom: '20px'
-        }}>
-          <div>
-            <label htmlFor="fullName">Full Name *</label>
-            <input
-              id="fullName"
-              name="fullName"
-              placeholder="John Doe"
-              value={form.fullName}
-              onChange={handleChange}
-              required
-              style={{ width: '100%' }}
-            />
-            {getFieldError('full name') && (
-              <small style={{ color: '#dc3545' }}>{getFieldError('full name')}</small>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="gender">Gender *</label>
-            <select 
-              id="gender"
-              name="gender" 
-              value={form.gender} 
-              onChange={handleChange} 
-              required
-              style={{ width: '100%' }}
+          )}
+          
+          <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
+            <button 
+              onClick={handleForceAdd}
+              disabled={loading}
+              style={duplicateButtonStyle}
+              onMouseEnter={(e) => e.currentTarget.style.background = "#d97706"}
+              onMouseLeave={(e) => e.currentTarget.style.background = "#f59e0b"}
             >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            {getFieldError('gender') && (
-              <small style={{ color: '#dc3545' }}>{getFieldError('gender')}</small>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="dob">Date of Birth *</label>
-            <input 
-              type="date" 
-              id="dob"
-              name="dob" 
-              value={form.dob} 
-              onChange={handleChange} 
-              required
-              style={{ width: '100%' }}
-            />
-            {getFieldError('date of birth') && (
-              <small style={{ color: '#dc3545' }}>{getFieldError('date of birth')}</small>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="phone">Phone Number *</label>
-            <input 
-              id="phone"
-              name="phone" 
-              placeholder="+1234567890" 
-              value={form.phone} 
-              onChange={handleChange} 
-              required
-              style={{ width: '100%' }}
-            />
-            {getFieldError('phone') && (
-              <small style={{ color: '#dc3545' }}>{getFieldError('phone')}</small>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="email">Email Address *</label>
-            <input 
-              id="email"
-              name="email" 
-              placeholder="john@example.com" 
-              value={form.email} 
-              onChange={handleChange} 
-              required
-              type="email"
-              style={{ width: '100%' }}
-            />
-            {getFieldError('email') && (
-              <small style={{ color: '#dc3545' }}>{getFieldError('email')}</small>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="address">Physical Address</label>
-            <input 
-              id="address"
-              name="address" 
-              placeholder="123 Main St, City, Country" 
-              value={form.address} 
-              onChange={handleChange}
-              style={{ width: '100%' }}
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="maritalStatus">Marital Status</label>
-            <select
-              id="maritalStatus"
-              name="maritalStatus" 
-              value={form.maritalStatus} 
-              onChange={handleChange}
-              style={{ width: '100%' }}
+              {loading ? 'Adding...' : 'Add Anyway (Override)'}
+            </button>
+            <button 
+              onClick={() => setDuplicateWarning({ 
+                show: false, 
+                message: "", 
+                duplicateFields: [] 
+              })}
+              style={cancelButtonStyle}
+              onMouseEnter={(e) => e.currentTarget.style.background = "#4b5563"}
+              onMouseLeave={(e) => e.currentTarget.style.background = "#6b7280"}
             >
-              <option value="">Select Status</option>
-              <option value="Single">Single</option>
-              <option value="Married">Married</option>
-              <option value="Divorced">Divorced</option>
-              <option value="Widowed">Widowed</option>
-              <option value="Separated">Separated</option>
-            </select>
-          </div>
-          
-          <div>
-            <label htmlFor="occupation">Occupation</label>
-            <input 
-              id="occupation"
-              name="occupation" 
-              placeholder="Software Developer" 
-              value={form.occupation} 
-              onChange={handleChange}
-              style={{ width: '100%' }}
-            />
-          </div>
-
-          <div style={{ gridColumn: '1 / -1' }}>
-            <label htmlFor="profilePhotoUrl">Profile Photo URL</label>
-            <input
-              id="profilePhotoUrl"
-              name="profilePhotoUrl"
-              placeholder="https://example.com/photo.jpg"
-              value={form.profilePhotoUrl}
-              onChange={handleChange}
-              style={{ width: '100%' }}
-            />
+              Review Details
+            </button>
           </div>
         </div>
+      )}
 
-        {/* Action Buttons */}
-        <div style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap',
-          gap: '10px', 
-          marginTop: '20px',
-          paddingTop: '15px',
-          borderTop: '1px solid #dee2e6'
-        }}>
-          <button 
-            onClick={handleCheckDuplicate}
-            disabled={loading || (!form.phone && !form.email)}
-            style={{ 
-              background: '#17a2b8', 
-              color: 'white',
-              padding: '10px 20px',
-              flex: 1
+      {/* Form Fields */}
+      <div style={formGridStyle}>
+        <div style={fieldGroupStyle}>
+          <label htmlFor="fullName" style={labelStyle}>Full Name *</label>
+          <input
+            id="fullName"
+            name="fullName"
+            placeholder="John Doe"
+            value={form.fullName}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
             }}
-          >
-            {loading ? "Checking..." : "Check for Duplicates"}
-          </button>
-          
-          <button 
-            onClick={handleSubmit} 
-            disabled={loading}
-            style={{ 
-              background: '#28a745', 
-              color: 'white',
-              padding: '10px 20px',
-              flex: 2
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
             }}
-          >
-            {loading ? "Saving..." : "Save Member"}
-          </button>
-
-          <button 
-            onClick={onClose} 
-            style={{ 
-              background: '#6c757d', 
-              color: 'white',
-              padding: '10px 20px',
-              flex: 1
-            }}
-          >
-            Cancel
-          </button>
+          />
+          {getFieldError('full name') && (
+            <small style={errorTextStyle}>{getFieldError('full name')}</small>
+          )}
         </div>
+
+        <div style={fieldGroupStyle}>
+          <label htmlFor="gender" style={labelStyle}>Gender *</label>
+          <select 
+            id="gender"
+            name="gender" 
+            value={form.gender} 
+            onChange={handleChange} 
+            required
+            style={selectStyle}
+          >
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          {getFieldError('gender') && (
+            <small style={errorTextStyle}>{getFieldError('gender')}</small>
+          )}
+        </div>
+
+        <div style={fieldGroupStyle}>
+          <label htmlFor="dob" style={labelStyle}>Date of Birth *</label>
+          <input 
+            type="date" 
+            id="dob"
+            name="dob" 
+            value={form.dob} 
+            onChange={handleChange} 
+            required
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+          {getFieldError('date of birth') && (
+            <small style={errorTextStyle}>{getFieldError('date of birth')}</small>
+          )}
+        </div>
+        
+        <div style={fieldGroupStyle}>
+          <label htmlFor="phone" style={labelStyle}>Phone Number *</label>
+          <input 
+            id="phone"
+            name="phone" 
+            placeholder="+1234567890" 
+            value={form.phone} 
+            onChange={handleChange} 
+            required
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+          {getFieldError('phone') && (
+            <small style={errorTextStyle}>{getFieldError('phone')}</small>
+          )}
+        </div>
+        
+        <div style={fieldGroupStyle}>
+          <label htmlFor="email" style={labelStyle}>Email Address *</label>
+          <input 
+            id="email"
+            name="email" 
+            placeholder="john@example.com" 
+            value={form.email} 
+            onChange={handleChange} 
+            required
+            type="email"
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+          {getFieldError('email') && (
+            <small style={errorTextStyle}>{getFieldError('email')}</small>
+          )}
+        </div>
+        
+        <div style={fieldGroupStyle}>
+          <label htmlFor="address" style={labelStyle}>Physical Address</label>
+          <input 
+            id="address"
+            name="address" 
+            placeholder="123 Main St, City, Country" 
+            value={form.address} 
+            onChange={handleChange}
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+        </div>
+        
+        <div style={fieldGroupStyle}>
+          <label htmlFor="maritalStatus" style={labelStyle}>Marital Status</label>
+          <select
+            id="maritalStatus"
+            name="maritalStatus" 
+            value={form.maritalStatus} 
+            onChange={handleChange}
+            style={selectStyle}
+          >
+            <option value="">Select Status</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Divorced">Divorced</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Separated">Separated</option>
+          </select>
+        </div>
+        
+        <div style={fieldGroupStyle}>
+          <label htmlFor="occupation" style={labelStyle}>Occupation</label>
+          <input 
+            id="occupation"
+            name="occupation" 
+            placeholder="Software Developer" 
+            value={form.occupation} 
+            onChange={handleChange}
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+        </div>
+
+        <div style={{ ...fieldGroupStyle, gridColumn: "1 / -1" }}>
+          <label htmlFor="profilePhotoUrl" style={labelStyle}>Profile Photo URL</label>
+          <input
+            id="profilePhotoUrl"
+            name="profilePhotoUrl"
+            placeholder="https://example.com/photo.jpg"
+            value={form.profilePhotoUrl}
+            onChange={handleChange}
+            style={inputStyle}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "#3b82f6";
+              e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "#e5e7eb";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div style={buttonGroupStyle}>
+        <button 
+          onClick={handleCheckDuplicate}
+          disabled={loading || (!form.phone && !form.email)}
+          style={{
+            ...duplicateButtonStyle,
+            opacity: loading || (!form.phone && !form.email) ? 0.6 : 1,
+            cursor: loading || (!form.phone && !form.email) ? "not-allowed" : "pointer",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading && (form.phone || form.email)) {
+              e.currentTarget.style.background = "#d97706";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!loading && (form.phone || form.email)) {
+              e.currentTarget.style.background = "#f59e0b";
+            }
+          }}
+        >
+          {loading ? "Checking..." : "Check for Duplicates"}
+        </button>
+        
+        <button 
+          onClick={handleSubmit} 
+          disabled={loading}
+          style={{
+            ...saveButtonStyle,
+            opacity: loading ? 0.6 : 1,
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) e.currentTarget.style.background = "#059669";
+          }}
+          onMouseLeave={(e) => {
+            if (!loading) e.currentTarget.style.background = "#10b981";
+          }}
+        >
+          {loading ? "Saving..." : "Save Member"}
+        </button>
+
+        <button 
+          onClick={onClose}
+          style={cancelButtonStyle}
+          onMouseEnter={(e) => e.currentTarget.style.background = "#4b5563"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "#6b7280"}
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );

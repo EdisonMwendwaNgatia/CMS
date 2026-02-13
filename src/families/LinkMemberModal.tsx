@@ -104,66 +104,85 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0,0,0,0.5)',
+    background: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1100,
+    zIndex: 1200,
   };
 
   const contentStyle = {
     background: 'white',
-    borderRadius: '10px',
-    padding: '25px',
+    borderRadius: '15px',
+    padding: '30px',
     width: '90%',
     maxWidth: '500px',
-    boxShadow: '0 5px 20px rgba(0,0,0,0.2)',
+    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
   };
 
   const inputStyle = {
     width: '100%',
     padding: '12px 15px',
     border: `2px solid ${memberError ? '#e74c3c' : isValidMember ? '#2ecc71' : '#ddd'}`,
-    borderRadius: '5px',
+    borderRadius: '8px',
     fontSize: '1rem',
-    transition: 'border-color 0.3s',
+    transition: 'all 0.3s',
     outline: 'none',
+    boxSizing: 'border-box' as const,
   };
+
+  const keyframes = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
 
   return (
     <div style={modalStyle}>
+      <style>{keyframes}</style>
       <div style={contentStyle}>
         <div style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
-          marginBottom: '20px',
-          borderBottom: '1px solid #eee',
+          marginBottom: '25px',
+          borderBottom: '2px solid #f0f0f0',
           paddingBottom: '15px'
         }}>
-          <h3 style={{ margin: 0, color: '#2c3e50' }}>Link Member to Family</h3>
+          <h3 style={{ 
+            margin: 0, 
+            color: '#2c3e50', 
+            fontSize: '1.4rem',
+            fontWeight: '600'
+          }}>
+            Link Member to Family
+          </h3>
           <button 
             onClick={onClose}
             style={{
               background: 'none',
               border: 'none',
-              fontSize: '1.5rem',
+              fontSize: '1.8rem',
               cursor: 'pointer',
               color: '#7f8c8d',
-              padding: '0 5px'
+              padding: '0 5px',
+              lineHeight: 1,
             }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#2c3e50'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#7f8c8d'}
           >
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '25px' }}>
             <label style={{ 
               display: 'block', 
               marginBottom: '8px', 
               color: '#2c3e50', 
-              fontWeight: 600,
+              fontWeight: '600',
               fontSize: '0.95rem'
             }}>
               Membership Number *
@@ -185,10 +204,10 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
                   top: '50%',
                   transform: 'translateY(-50%)',
                   color: '#2ecc71',
-                  fontWeight: 500,
+                  fontWeight: '600',
                   fontSize: '0.9rem',
                   background: 'white',
-                  padding: '0 5px'
+                  padding: '0 5px',
                 }}>
                   ✓ Valid
                 </div>
@@ -200,10 +219,13 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
               <div style={{ 
                 color: '#f39c12', 
                 fontSize: '0.85rem', 
-                marginTop: '5px',
+                marginTop: '8px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px'
+                gap: '5px',
+                padding: '5px 10px',
+                background: '#fef5e7',
+                borderRadius: '5px',
               }}>
                 <span>⏳</span> Checking membership number...
               </div>
@@ -213,10 +235,13 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
               <div style={{ 
                 color: '#e74c3c', 
                 fontSize: '0.85rem', 
-                marginTop: '5px',
+                marginTop: '8px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px'
+                gap: '5px',
+                padding: '5px 10px',
+                background: '#fdeded',
+                borderRadius: '5px',
               }}>
                 <span>⚠️</span> {memberError}
               </div>
@@ -224,30 +249,32 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
             
             {isValidMember && memberName && (
               <div style={{ 
-                color: '#2ecc71', 
+                color: '#27ae60', 
                 fontSize: '0.95rem', 
-                marginTop: '8px',
-                padding: '10px',
+                marginTop: '12px',
+                padding: '12px 15px',
                 background: '#d4edda',
-                borderRadius: '5px',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '10px',
+                border: '1px solid #c3e6cb',
               }}>
-                <span>✅</span>
+                <span style={{ fontSize: '1.2rem' }}>✅</span>
                 <div>
-                  <strong>Member Found:</strong> {memberName}
+                  <strong style={{ display: 'block', marginBottom: '3px' }}>Member Found:</strong>
+                  <span>{memberName}</span>
                 </div>
               </div>
             )}
           </div>
 
-          <div style={{ marginBottom: '25px' }}>
+          <div style={{ marginBottom: '30px' }}>
             <label style={{ 
               display: 'block', 
               marginBottom: '8px', 
               color: '#2c3e50', 
-              fontWeight: 600,
+              fontWeight: '600',
               fontSize: '0.95rem'
             }}>
               Relationship *
@@ -258,12 +285,16 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
               style={{
                 width: '100%',
                 padding: '12px 15px',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
+                border: '2px solid #ddd',
+                borderRadius: '8px',
                 fontSize: '1rem',
                 background: 'white',
                 cursor: 'pointer',
+                outline: 'none',
+                transition: 'border-color 0.3s',
               }}
+              onFocus={(e) => e.currentTarget.style.borderColor = '#3498db'}
+              onBlur={(e) => e.currentTarget.style.borderColor = '#ddd'}
               disabled={loading}
             >
               <option value="Husband">Husband</option>
@@ -276,10 +307,10 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
           
           <div style={{ 
             display: 'flex', 
-            gap: '10px', 
+            gap: '12px', 
             justifyContent: 'flex-end',
-            borderTop: '1px solid #eee',
-            paddingTop: '20px'
+            borderTop: '2px solid #f0f0f0',
+            paddingTop: '25px'
           }}>
             <button
               type="button"
@@ -290,10 +321,22 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
                 color: 'white',
                 border: 'none',
                 padding: '12px 24px',
-                borderRadius: '5px',
-                cursor: 'pointer',
+                borderRadius: '8px',
+                cursor: loading ? 'not-allowed' : 'pointer',
                 fontSize: '1rem',
+                fontWeight: '500',
                 opacity: loading ? 0.7 : 1,
+                transition: 'all 0.3s',
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = '#7f8c8d';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = '#95a5a6';
+                }
               }}
             >
               Cancel
@@ -305,24 +348,56 @@ const LinkMemberModal: React.FC<LinkMemberModalProps> = ({ familyId, onClose }) 
                 background: isValidMember ? '#2ecc71' : '#bdc3c7',
                 color: 'white',
                 border: 'none',
-                padding: '12px 24px',
-                borderRadius: '5px',
+                padding: '12px 30px',
+                borderRadius: '8px',
                 cursor: (isValidMember && !loading) ? 'pointer' : 'not-allowed',
                 fontSize: '1rem',
+                fontWeight: '600',
                 opacity: loading ? 0.7 : 1,
-                transition: 'background 0.3s',
+                transition: 'all 0.3s',
+                boxShadow: isValidMember ? '0 2px 5px rgba(46, 204, 113, 0.3)' : 'none',
+              }}
+              onMouseEnter={(e) => {
+                if (isValidMember && !loading) {
+                  e.currentTarget.style.background = '#27ae60';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isValidMember && !loading) {
+                  e.currentTarget.style.background = '#2ecc71';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }
               }}
             >
-              {loading ? 'Linking...' : 'Link Member'}
+              {loading ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{
+                    display: 'inline-block',
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid white',
+                    borderTopColor: 'transparent',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                  }}></span>
+                  Linking...
+                </span>
+              ) : (
+                'Link Member'
+              )}
             </button>
           </div>
 
           {/* Helper text */}
           <div style={{ 
-            marginTop: '15px', 
+            marginTop: '20px', 
             fontSize: '0.8rem', 
             color: '#7f8c8d',
-            textAlign: 'center'
+            textAlign: 'center',
+            padding: '10px',
+            background: '#f8f9fa',
+            borderRadius: '5px',
           }}>
             Enter a valid membership number to link a member to this family.
           </div>
