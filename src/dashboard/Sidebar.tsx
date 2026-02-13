@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const sidebarStyle = {
     width: "250px",
@@ -27,130 +28,171 @@ export default function Sidebar() {
     textAlign: "center" as const,
   };
 
-  const buttonStyle = {
-    width: "100%",
-    padding: "12px 20px",
-    margin: "2px 0",
-    border: "none",
-    backgroundColor: "transparent",
-    color: "#ecf0f1",
-    textAlign: "left" as const,
-    cursor: "pointer",
-    fontSize: "0.95rem",
-    transition: "all 0.3s",
-    borderLeft: "3px solid transparent",
+  // Function to determine if a route is active
+  const isActive = (path: string) => {
+    if (path === "/dashboard/mark-attendance") {
+      return location.pathname.includes("/dashboard/mark-attendance");
+    }
+    return location.pathname === path;
   };
 
-  const markAttendanceBtnStyle = {
-    ...buttonStyle,
-    backgroundColor: "#27ae60",
-    color: "white",
-    fontWeight: "600",
-    borderLeft: "3px solid #2ecc71",
+  // Style for active button
+  const getButtonStyle = (path: string) => {
+    const active = isActive(path);
+    return {
+      width: "100%",
+      padding: "12px 20px",
+      margin: "2px 0",
+      border: "none",
+      backgroundColor: active ? "#34495e" : "transparent",
+      color: active ? "#3498db" : "#ecf0f1",
+      textAlign: "left" as const,
+      cursor: "pointer",
+      fontSize: "0.95rem",
+      transition: "all 0.3s",
+      borderLeft: active ? "3px solid #3498db" : "3px solid transparent",
+      fontWeight: active ? "500" : "normal",
+    };
   };
+
+  const handleTitleClick = () => {
+    navigate("/dashboard");
+  };
+
 
   return (
     <aside style={sidebarStyle}>
-      <h3 style={titleStyle}>Deliverance Church Olepolos</h3>
+      <h3 style={titleStyle} onClick={handleTitleClick}>Deliverance Church Olepolos</h3>
 
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/members")}
         onClick={() => navigate("/dashboard/members")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/members")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/members")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Members
       </button>
 
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/visitors")}
         onClick={() => navigate("/dashboard/visitors")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/visitors")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/visitors")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Visitors
       </button>
       
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/ministries")}
         onClick={() => navigate("/dashboard/ministries")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/ministries")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/ministries")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Ministries
       </button>
       
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/attendance")}
         onClick={() => navigate("/dashboard/attendance")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/attendance")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/attendance")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Attendance History
       </button>
 
       <button
-        style={markAttendanceBtnStyle}
+        style={getButtonStyle("/dashboard/mark-attendance")}
         onClick={() => navigate("/dashboard/mark-attendance")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#2ecc71";
+          if (!isActive("/dashboard/mark-attendance")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "#27ae60";
+          if (!isActive("/dashboard/mark-attendance")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+
+          }
         }}
       >
         Mark Attendance
       </button>
 
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/families")}
         onClick={() => navigate("/dashboard/families")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/families")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/families")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Families
       </button>
 
       <button
-        style={buttonStyle}
+        style={getButtonStyle("/dashboard/reports")}
         onClick={() => navigate("/dashboard/reports")}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = "#34495e";
-          e.currentTarget.style.borderLeft = "3px solid #3498db";
+          if (!isActive("/dashboard/reports")) {
+            e.currentTarget.style.backgroundColor = "#34495e";
+            e.currentTarget.style.borderLeft = "3px solid #3498db";
+          }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.borderLeft = "3px solid transparent";
+          if (!isActive("/dashboard/reports")) {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.borderLeft = "3px solid transparent";
+          }
         }}
       >
         Reports
