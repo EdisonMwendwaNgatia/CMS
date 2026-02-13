@@ -4,6 +4,12 @@ import { doc, onSnapshot, updateDoc, arrayUnion, query, collection, where, getDo
 import { db } from "../firebase/firebase";
 import type { Ministry, MinistryMember } from "./ministryTypes";
 import type { Member } from "../members/memberTypes";
+import AttendanceModal from "./AttendanceModal";
+import { 
+  subscribeToMinistryAttendance, 
+  deleteAttendanceSession 
+} from "./ministryAttendanceService";
+import type { MinistryAttendance } from "./ministryAttendanceTypes";
 
 const MinistryDetails: React.FC = () => {
   const { ministryId } = useParams<{ ministryId: string }>();
@@ -16,6 +22,14 @@ const MinistryDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Attendance states
+  const [attendanceRecords, setAttendanceRecords] = useState<MinistryAttendance[]>([]);
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [selectedAttendance, setSelectedAttendance] = useState<MinistryAttendance | null>(null);
+  const [memberStats, setMemberStats] = useState<Record<string, { attended: number, total: number, rate: number }>>({});
+  // Used to force refresh after attendance
+  const [attendanceRefreshKey, setAttendanceRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!ministryId) return;
@@ -39,6 +53,34 @@ const MinistryDetails: React.FC = () => {
 
     return () => unsubscribe();
   }, [ministryId]);
+
+  // Subscribe to attendance records
+  useEffect(() => {
+    if (!ministryId) return;
+    const unsubscribe = subscribeToMinistryAttendance(ministryId, (records) => {
+      setAttendanceRecords(records);
+      // Calculate stats for each member
+      const stats: Record<string, { attended: number, total: number, rate: number }> = {};
+      records.forEach(record => {
+        record.attendees.forEach(attendee => {
+          if (!stats[attendee.memberId]) {
+            stats[attendee.memberId] = { attended: 0, total: 0, rate: 0 };
+          }
+          stats[attendee.memberId].total++;
+          if (attendee.attended) {
+            stats[attendee.memberId].attended++;
+          }
+        });
+      });
+      // Calculate rates
+      Object.keys(stats).forEach(memberId => {
+        const member = stats[memberId];
+        member.rate = Math.round((member.attended / member.total) * 100);
+      });
+      setMemberStats(stats);
+    });
+    return () => unsubscribe();
+  }, [ministryId, attendanceRefreshKey]);
 
   const searchMember = async () => {
     if (!membershipNumber.trim()) {
@@ -163,6 +205,27 @@ const MinistryDetails: React.FC = () => {
     } catch (err) {
       setError("Failed to remove member");
       console.error(err);
+    }
+  };
+
+  const handleTakeAttendance = () => {
+    setSelectedAttendance(null);
+    setIsAttendanceModalOpen(true);
+  };
+
+  const handleEditAttendance = (attendance: MinistryAttendance) => {
+    setSelectedAttendance(attendance);
+    setIsAttendanceModalOpen(true);
+  };
+
+  const handleDeleteAttendance = async (attendanceId: string, meetingDate: string) => {
+    if (window.confirm(`Delete attendance record for ${meetingDate}?`)) {
+      try {
+        await deleteAttendanceSession(attendanceId);
+      } catch (err) {
+        setError("Failed to delete attendance record");
+        console.error(err);
+      }
     }
   };
 
@@ -324,6 +387,18 @@ const MinistryDetails: React.FC = () => {
     transition: "background 0.3s",
   };
 
+  const editBtnStyle = {
+    background: "#3498db",
+    color: "white",
+    border: "none",
+    padding: "6px 12px",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "0.85rem",
+    marginRight: "5px",
+    transition: "background 0.3s",
+  };
+
   const loadingStyle = {
     display: "flex",
     flexDirection: "column" as const,
@@ -449,6 +524,94 @@ const MinistryDetails: React.FC = () => {
         {success && <div style={successStyle}>{success}</div>}
       </div>
 
+      {/* Attendance Section */}
+      <div style={sectionStyle}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+          <h2 style={sectionTitleStyle}>Attendance</h2>
+          <button
+            onClick={handleTakeAttendance}
+            style={{
+              background: members.length === 0 ? "#95a5a6" : "#2ecc71",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "5px",
+              cursor: members.length === 0 ? "not-allowed" : "pointer",
+              fontSize: "1rem",
+            }}
+            disabled={members.length === 0}
+          >
+            Take Attendance
+          </button>
+        </div>
+        
+        {attendanceRecords.length === 0 ? (
+          <div style={{
+            textAlign: "center",
+            padding: "40px",
+            color: "#7f8c8d",
+            background: "#f8f9fa",
+            borderRadius: "5px",
+          }}>
+            <p>No attendance records yet. Click "Take Attendance" to start.</p>
+          </div>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={tableHeaderStyle}>Date</th>
+                  <th style={tableHeaderStyle}>Day</th>
+                  <th style={tableHeaderStyle}>Present</th>
+                  <th style={tableHeaderStyle}>Total</th>
+                  <th style={tableHeaderStyle}>Rate</th>
+                  <th style={tableHeaderStyle}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {attendanceRecords.map((record) => (
+                  <tr key={record.id} style={{ borderBottom: "1px solid #eee" }}>
+                    <td style={tableCellStyle}>
+                      {new Date(record.meetingDate).toLocaleDateString()}
+                    </td>
+                    <td style={tableCellStyle}>{record.meetingDay}</td>
+                    <td style={tableCellStyle}>{record.totalAttended}</td>
+                    <td style={tableCellStyle}>{record.totalMembers}</td>
+                    <td style={tableCellStyle}>
+                      <span style={{
+                        background: record.attendanceRate >= 70 ? "#2ecc71" : 
+                                   record.attendanceRate >= 50 ? "#f39c12" : "#e74c3c",
+                        color: "white",
+                        padding: "3px 10px",
+                        borderRadius: "15px",
+                        fontSize: "0.8rem",
+                        fontWeight: "600",
+                      }}>
+                        {record.attendanceRate}%
+                      </span>
+                    </td>
+                    <td style={tableCellStyle}>
+                      <button
+                        onClick={() => handleEditAttendance(record)}
+                        style={editBtnStyle}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAttendance(record.id!, record.meetingDate)}
+                        style={removeBtnStyle}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
       {/* Members List */}
       <div style={sectionStyle}>
         <h2 style={sectionTitleStyle}>Ministry Members ({members.length})</h2>
@@ -472,6 +635,7 @@ const MinistryDetails: React.FC = () => {
                   <th style={tableHeaderStyle}>Name</th>
                   <th style={tableHeaderStyle}>Email</th>
                   <th style={tableHeaderStyle}>Phone</th>
+                  <th style={tableHeaderStyle}>Attendance Rate</th>
                   <th style={tableHeaderStyle}>Joined On</th>
                   <th style={tableHeaderStyle}>Actions</th>
                 </tr>
@@ -494,6 +658,24 @@ const MinistryDetails: React.FC = () => {
                     <td style={tableCellStyle}>{member.fullName}</td>
                     <td style={tableCellStyle}>{member.email}</td>
                     <td style={tableCellStyle}>{member.phone}</td>
+                    <td style={tableCellStyle}>
+                      {memberStats[member.memberId] ? (
+                        <span style={{
+                          background: memberStats[member.memberId].rate >= 70 ? "#2ecc71" : 
+                                     memberStats[member.memberId].rate >= 50 ? "#f39c12" : "#e74c3c",
+                          color: "white",
+                          padding: "3px 10px",
+                          borderRadius: "15px",
+                          fontSize: "0.8rem",
+                          fontWeight: "600",
+                        }}>
+                          {memberStats[member.memberId].rate}% 
+                          ({memberStats[member.memberId].attended}/{memberStats[member.memberId].total})
+                        </span>
+                      ) : (
+                        <span style={{ color: "#7f8c8d" }}>No data</span>
+                      )}
+                    </td>
                     <td style={tableCellStyle}>{new Date(member.joinedAt).toLocaleDateString()}</td>
                     <td style={tableCellStyle}>
                       <button
@@ -510,6 +692,24 @@ const MinistryDetails: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Attendance Modal */}
+      <AttendanceModal
+        isOpen={isAttendanceModalOpen}
+        onClose={() => {
+          setIsAttendanceModalOpen(false);
+          setSelectedAttendance(null);
+        }}
+        ministryId={ministryId!}
+        ministryName={ministry.name}
+        meetingDay={ministry.meetingDay}
+        members={members}
+        existingAttendance={selectedAttendance}
+        onSuccess={() => {
+          // Force refresh attendance data
+          setAttendanceRefreshKey((k) => k + 1);
+        }}
+      />
     </div>
   );
 };

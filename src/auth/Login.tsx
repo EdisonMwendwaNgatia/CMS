@@ -32,7 +32,8 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      <h2>Church Management System</h2>
+      <h2>Deliverance Church Olepolos</h2>
+      <p style={{ marginTop: 6, color: "#666" }}>Church Management System</p>
 
       <input
         type="email"

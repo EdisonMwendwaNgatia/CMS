@@ -6,16 +6,33 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
-      <h3>Church Admin</h3>
+      <h3>Deliverance Church Olepolos</h3>
 
-      <button onClick={() => navigate("/dashboard/members")}>Members</button>
+      <button onClick={() => navigate("/dashboard/members")}>
+        Members
+      </button>
 
-      <button onClick={() => navigate("/dashboard/visitors")}>Visitors</button>
-      <button disabled>Attendance</button>
+      <button onClick={() => navigate("/dashboard/visitors")}>
+        Visitors
+      </button>
+      
       <button onClick={() => navigate("/dashboard/ministries")}>
         Ministries
       </button>
-      <button disabled>Reports</button>
+      
+      <button onClick={() => navigate("/dashboard/attendance")}> 
+        Attendance History
+      </button>
+
+      <button 
+        onClick={() => navigate("/dashboard/mark-attendance")}
+        >
+        Mark Attendance
+      </button>
+
+      <button onClick={() => navigate("/dashboard/families")}>Families</button>
+
+      <button onClick={() => navigate("/dashboard/reports")}>Reports</button>
     </aside>
   );
 }
